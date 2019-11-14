@@ -15,3 +15,10 @@ jobs:
       - store_artifacts:
           path: /release-playground/app/build/outputs/
           destination: outputs/
+
+workflows:
+  version: 2
+
+  commit:
+    jobs:
+      - build_unsigned_release
