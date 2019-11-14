@@ -1,0 +1,17 @@
+version: 2
+
+jobs:
+  build_unsigned_release:
+    docker:
+      - image: monzoandroid/ci:0.19
+    resource_class: small
+    working_directory: /release-playground
+    steps:
+      - checkout
+      - run:
+          name: Build unsigned release APK
+          command: |
+            ./gradlew app:assembleRelease -Punsigned
+      - store_artifacts:
+          path: /release-playground/app/build/outputs/
+          destination: outputs/
