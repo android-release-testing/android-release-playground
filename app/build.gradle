@@ -45,6 +45,9 @@ android {
         }
 
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+
             signingConfig project.hasProperty('unsigned') ? null : signingConfigs.release
         }
     }
