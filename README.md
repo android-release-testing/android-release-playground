@@ -1,0 +1,17 @@
+# android-release-playground
+
+A mostly empty app used to test our release process.
+
+To generate a new JKS file containing a 2048-bit RSA key pair, run:
+
+```shell
+keytool -genkeypair \
+	-keystore debug.jks \
+	-storetype jks \
+	-storepass abcdef \
+	-dname CN=Monzo \
+	-keyalg rsa \
+	-keysize 2048 \
+	-alias monzo_debug \
+	-keypass abcdef
+```

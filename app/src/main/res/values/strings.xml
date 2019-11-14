@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Release playground</string>
+
+    <string name="package_name">Package name</string>
+    <string name="version_name">Version name</string>
+    <string name="version_code">Version code</string>
+</resources>

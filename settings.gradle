@@ -1,0 +1,3 @@
+rootProject.name = 'android-release-playground'
+
+include ':app'

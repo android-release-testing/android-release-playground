@@ -1,0 +1,61 @@
+apply from: "$rootDir/gradle/versioning.gradle"
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 29
+
+        applicationId "com.monzo.releases"
+
+        versionCode generateVersionCode()
+        versionName generateVersionName()
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("$rootDir/debug.jks")
+            storePassword 'abcdef'
+            keyAlias 'monzo_debug'
+            keyPassword 'abcdef'
+        }
+
+        release {
+            storeFile file("$rootDir/release.jks")
+            storePassword 'uvwxyz'
+            keyAlias 'monzo_release'
+            keyPassword 'uvwxyz'
+        }
+
+        upload {
+            storeFile file("$rootDir/upload.jks")
+            storePassword '123456'
+            keyAlias 'monzo_upload'
+            keyPassword '123456'
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            signingConfig project.hasProperty('unsigned') ? null : signingConfigs.debug
+        }
+
+        release {
+            signingConfig project.hasProperty('unsigned') ? null : signingConfigs.release
+        }
+    }
+
+    applicationVariants.all { variant ->
+        def mergedFlavor = variant.getMergedFlavor()
+        mergedFlavor.manifestPlaceholders.variantName = variant.name.capitalize()
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+}
