@@ -13,5 +13,6 @@ keytool -genkeypair \
 	-keyalg rsa \
 	-keysize 2048 \
 	-alias monzo_debug \
-	-keypass abcdef
+	-keypass abcdef \
+	-validity 36500
 ```
