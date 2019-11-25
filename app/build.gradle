@@ -15,6 +15,12 @@ android {
         versionName generateVersionName()
     }
 
+    lintOptions {
+        // This prevents lintVital running every time we build a release variant.
+        // It does *not* prevent us explicitly running lint on a release variant.
+        checkReleaseBuilds false
+    }
+
     signingConfigs {
         debug {
             storeFile file("$rootDir/debug.jks")
