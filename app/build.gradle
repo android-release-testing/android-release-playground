@@ -41,14 +41,21 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            signingConfig project.hasProperty('unsigned') ? null : signingConfigs.debug
+            signingConfig signingConfigs.debug
         }
 
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
 
-            signingConfig project.hasProperty('unsigned') ? null : signingConfigs.release
+            def signing = findProperty('signing') ?: 'release'
+            if (signing == 'unsigned') {
+                signingConfig = null
+            } else if (signing == 'upload') {
+                signingConfig = signingConfigs.upload
+            } else {
+                signingConfig = signingConfigs.release
+            }
         }
     }
 

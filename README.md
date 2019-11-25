@@ -2,6 +2,18 @@
 
 A mostly empty app used to test our release process.
 
+To build an unsigned release APK, run:
+
+```shell
+./gradlew app:asR -Psigning=unsigned
+```
+
+To build an release APK signed with the upload key pair, run:
+
+```shell
+./gradlew app:asR -Psigning=upload
+```
+
 To generate a new JKS file containing a 2048-bit RSA key pair, run:
 
 ```shell
