@@ -3,7 +3,7 @@ def generateVersionCode() {
     def major = splitVersion[0].toInteger()
     def minor = splitVersion[1].toInteger()
     def patch = splitVersion[2].toInteger()
-    def buildVersion = rootProject.file('versioning/rc').text.trim().toInteger()
+    def buildVersion = rootProject.file('versioning/build').text.trim().toInteger()
 
     if (major < 0 || major > 99) {
         throw new IllegalArgumentException("major version is very large - are you sure you wanted to set it to this?")
@@ -26,16 +26,25 @@ def generateVersionName() {
     def major = splitVersion[0].toInteger()
     def minor = splitVersion[1].toInteger()
     def patch = splitVersion[2].toInteger()
-    def buildVersion = rootProject.file('versioning/rc').text.trim().toInteger()
+    def buildVersion = rootProject.file('versioning/build').text.trim().toInteger()
 
-    if (buildVersion == 0) {
+    if (buildVersion < 25) {
+        // 0..24 = Nightly build
         def gitSha = gitSha()
-        def gitBranchName = gitBranchName()
-        return "${major}.${minor}.${patch}-${gitBranchName}-${gitSha}"
-    } else if (buildVersion >= 1 && buildVersion <= 49) {
+        def gitBranch = gitBranch()
+        def nightlyTag = gitTags().find { it.startsWith("nightly-") }
+        if (gitBranch == "master" && nightlyTag != null) {
+            return "${major}.${minor}.${patch}-${nightlyTag}"
+        }
+        return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
+    } else if (buildVersion <= 49) {
+        // 24..49 = RC build
         return "${major}.${minor}.${patch}-rc${buildVersion}"
-    } else {
+    } else if (buildVersion == 50) {
+        // 50 = Final build
         return "${major}.${minor}.${patch}"
+    } else {
+        throw new RuntimeException("Invalid build version: $buildVersion")
     }
 }
 
@@ -54,7 +63,7 @@ def gitSha() {
     return cmd.text.trim()
 }
 
-def gitBranchName() {
+def gitBranch() {
     def cmd = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir)
     cmd.waitFor()
     if (cmd.exitValue() != 0) {
@@ -62,4 +71,14 @@ def gitBranchName() {
     }
 
     return cmd.text.trim()
+}
+
+def gitTags() {
+    def cmd = 'git tag --points-at HEAD'.execute([], project.rootDir)
+    cmd.waitFor()
+    if (cmd.exitValue() != 0) {
+        throw new RuntimeException(cmd.errorStream.text)
+    }
+
+    return cmd.text.trim().split('\n')
 }

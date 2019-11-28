@@ -64,11 +64,6 @@ android {
             }
         }
     }
-
-    applicationVariants.all { variant ->
-        def mergedFlavor = variant.getMergedFlavor()
-        mergedFlavor.manifestPlaceholders.variantName = variant.name.capitalize()
-    }
 }
 
 dependencies {

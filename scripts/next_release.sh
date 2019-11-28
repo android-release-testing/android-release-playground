@@ -10,7 +10,7 @@ git push origin master &> /dev/null
 
 RELEASE_BRANCH="release/$NEXT_VERSION"
 git checkout -b "$RELEASE_BRANCH" &> /dev/null
-echo "50" > versioning/rc
+echo "50" > versioning/build
 git commit -am "Set RC to 50" &> /dev/null
 git push origin "$RELEASE_BRANCH" &> /dev/null
 

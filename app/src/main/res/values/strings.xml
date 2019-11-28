@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Release playground</string>
+    <string name="app_name">Releases</string>
 
     <string name="package_name">Package name</string>
     <string name="version_name">Version name</string>
