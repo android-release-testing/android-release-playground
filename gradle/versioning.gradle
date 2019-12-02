@@ -32,13 +32,17 @@ def generateVersionName() {
         // 0..24 = Nightly build
         def gitSha = gitSha()
         def gitBranch = gitBranch()
-        def nightlyTag = gitTags().find { it.startsWith("nightly-") }
-        if (gitBranch == "master" && nightlyTag != null) {
-            return "${major}.${minor}.${patch}-${nightlyTag}"
+
+        if (gitBranch == "master") {
+            def nightlyTag = gitTags().find { it.startsWith("nightly-") }
+            if (nightlyTag != null) {
+                return "${major}.${minor}.${patch}-${nightlyTag}"
+            }
         }
+
         return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
     } else if (buildVersion <= 49) {
-        // 24..49 = RC build
+        // 25..49 = RC build
         def rc = buildVersion - 24
         return "${major}.${minor}.${patch}-rc${rc}"
     } else if (buildVersion == 50) {
