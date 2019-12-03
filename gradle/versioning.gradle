@@ -28,8 +28,8 @@ def generateVersionName() {
     def patch = splitVersion[2].toInteger()
     def buildVersion = rootProject.file('versioning/build').text.trim().toInteger()
 
-    if (buildVersion < 25) {
-        // 0..24 = Nightly build
+    if (buildVersion < 39) {
+        // 0..39 = Nightly build
         def gitSha = gitSha()
         def gitBranch = gitBranch()
 
@@ -42,8 +42,8 @@ def generateVersionName() {
 
         return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
     } else if (buildVersion <= 49) {
-        // 25..49 = RC build
-        def rc = buildVersion - 24
+        // 40..49 = RC build
+        def rc = buildVersion - 39
         return "${major}.${minor}.${patch}-rc${rc}"
     } else if (buildVersion == 50) {
         // 50 = Final build
