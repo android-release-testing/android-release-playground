@@ -3,7 +3,15 @@ def generateVersionCode() {
     def major = splitVersion[0].toInteger()
     def minor = splitVersion[1].toInteger()
     def patch = splitVersion[2].toInteger()
-    def buildVersion = rootProject.file('versioning/build').text.trim().toInteger()
+    def rc = rootProject.file('versioning/rc').text.trim().toInteger()
+
+    def build
+    if (rc > 0) {
+        build = rc + 39
+    } else {
+        def nightly = rootProject.file('versioning/nightly').text.trim().toInteger()
+        build = nightly
+    }
 
     if (major < 0 || major > 99) {
         throw new IllegalArgumentException("major version is very large - are you sure you wanted to set it to this?")
@@ -18,7 +26,7 @@ def generateVersionCode() {
         throw new IllegalArgumentException("build version is out of range")
     }
 
-    return major * 1_000_000 + minor * 10_000 + patch * 100 + buildVersion
+    return major * 1_000_000 + minor * 10_000 + patch * 100 + build
 }
 
 def generateVersionName() {
@@ -26,31 +34,30 @@ def generateVersionName() {
     def major = splitVersion[0].toInteger()
     def minor = splitVersion[1].toInteger()
     def patch = splitVersion[2].toInteger()
-    def buildVersion = rootProject.file('versioning/build').text.trim().toInteger()
+    def rc = rootProject.file('versioning/rc').text.trim().toInteger()
 
-    if (buildVersion < 39) {
-        // 0..39 = Nightly build
-        def gitSha = gitSha()
-        def gitBranch = gitBranch()
-
-        if (gitBranch == "master") {
-            def nightlyTag = gitTags().find { it.startsWith("nightly-") }
-            if (nightlyTag != null) {
-                return "${major}.${minor}.${patch}-${nightlyTag}"
-            }
-        }
-
-        return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
-    } else if (buildVersion <= 49) {
-        // 40..49 = RC build
-        def rc = buildVersion - 39
+    if (rc > 0 && rc < 10) {
+        // RC build on a release branch
         return "${major}.${minor}.${patch}-rc${rc}"
-    } else if (buildVersion == 50) {
-        // 50 = Final build
-        return "${major}.${minor}.${patch}"
-    } else {
-        throw new RuntimeException("Invalid build version: $buildVersion")
     }
+
+    if (rc == 10) {
+        // Final build on a release branch
+        return "${major}.${minor}.${patch}"
+    }
+
+    def gitBranch = gitBranch()
+    if (gitBranch == "master") {
+        def nightlyTag = gitTags().find { it.startsWith("nightly-") }
+        if (nightlyTag != null) {
+            // Nightly build on master
+            return "${major}.${minor}.${patch}-${nightlyTag}"
+        }
+    }
+
+    // Any other build
+    def gitSha = gitSha()
+    return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
 }
 
 ext {
@@ -58,8 +65,8 @@ ext {
     generateVersionName = this.&generateVersionName
 }
 
-def gitSha() {
-    def cmd = 'git rev-parse --short HEAD'.execute([], project.rootDir)
+def gitBranch() {
+    def cmd = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir)
     cmd.waitFor()
     if (cmd.exitValue() != 0) {
         throw new RuntimeException(cmd.errorStream.text)
@@ -68,8 +75,8 @@ def gitSha() {
     return cmd.text.trim()
 }
 
-def gitBranch() {
-    def cmd = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir)
+def gitSha() {
+    def cmd = 'git rev-parse --short HEAD'.execute([], project.rootDir)
     cmd.waitFor()
     if (cmd.exitValue() != 0) {
         throw new RuntimeException(cmd.errorStream.text)
