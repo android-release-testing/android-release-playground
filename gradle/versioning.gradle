@@ -22,7 +22,7 @@ def generateVersionCode() {
     if (patch < 0 || patch > 99) {
         throw new IllegalArgumentException("patch version is out of range")
     }
-    if (buildVersion < 0 || buildVersion > 99) {
+    if (build < 0 || build > 99) {
         throw new IllegalArgumentException("build version is out of range")
     }
 
