@@ -9,6 +9,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Build minified/obfuscated debug APK
+          command: |
+            ./gradlew app:assembleDebug -PpostprocessingEnabled=true
+      - run:
           name: Build unsigned release APK
           command: |
             ./gradlew app:assembleRelease -Psigning=unsigned

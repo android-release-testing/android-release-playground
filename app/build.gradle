@@ -48,12 +48,12 @@ android {
         debug {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+
+            minifyEnabled project.hasProperty('postprocessingEnabled') ? postprocessingEnabled.toBoolean() : false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
 
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-
             def signing = findProperty('signing') ?: 'release'
             if (signing == 'unsigned') {
                 signingConfig = null
@@ -62,6 +62,9 @@ android {
             } else {
                 signingConfig = signingConfigs.release
             }
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
