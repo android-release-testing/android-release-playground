@@ -7,7 +7,7 @@ def generateVersionCode() {
 
     def build
     if (rc > 0) {
-        build = rc + 39
+        build = rc + 40
     } else {
         def nightly = rootProject.file('versioning/nightly').text.trim().toInteger()
         build = nightly
