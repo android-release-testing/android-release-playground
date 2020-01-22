@@ -9,8 +9,7 @@ def generateVersionCode() {
     if (rc > 0) {
         build = rc + 40
     } else {
-        def nightly = rootProject.file('versioning/nightly').text.trim().toInteger()
-        build = nightly
+        build = rootProject.file('versioning/nightly').text.trim().toInteger()
     }
 
     if (major < 0 || major > 99) {
@@ -34,30 +33,37 @@ def generateVersionName() {
     def major = splitVersion[0].toInteger()
     def minor = splitVersion[1].toInteger()
     def patch = splitVersion[2].toInteger()
-    def rc = rootProject.file('versioning/rc').text.trim().toInteger()
 
-    if (rc > 0 && rc < 10) {
-        // RC build on a release branch
-        return "${major}.${minor}.${patch}-rc${rc}"
-    }
+    // Only look at the rc/nightly files if we're explicitly building a release.
+    //
+    // This ensures that we don't end up with a bunch of Firebase App Distribution builds with the
+    // same version name as release train builds, which can be very confusing.
+    //
+    // We automatically publish a staging build every time there's a push to a branch with an open
+    // PR (see .circle/config.yml). If the PR branch is based on a release branch (because it fixes
+    // a bug in the release) and we *didn't* check this Gradle property, we'd end up automatically
+    // publishing a staging build with the same version name as the most recent release train build
+    // on the release branch.
+    if (project.hasProperty('releaseVersionNames') ? releaseVersionNames.toBoolean() : false) {
+        def rc = rootProject.file('versioning/rc').text.trim().toInteger()
 
-    if (rc == 10) {
-        // Final build on a release branch
-        return "${major}.${minor}.${patch}"
-    }
-
-    def gitBranch = gitBranch()
-    if (gitBranch == "master") {
-        def nightlyTag = gitTags().find { it.startsWith("nightly-") }
-        if (nightlyTag != null) {
-            // Nightly build on master
-            return "${major}.${minor}.${patch}-${nightlyTag}"
+        if (rc > 0 && rc < 10) {
+            // RC build.
+            return "${major}.${minor}.${patch}-rc${rc}"
         }
+
+        if (rc == 10) {
+            // Final build.
+            return "${major}.${minor}.${patch}"
+        }
+
+        // Nightly build.
+        def nightly = rootProject.file('versioning/nightly').text.trim().toInteger()
+        return "${major}.${minor}.${patch}-nightly${nightly}"
     }
 
-    // Any other build
-    def gitSha = gitSha()
-    return "${major}.${minor}.${patch}-${gitBranch}-${gitSha}"
+    // Any other build.
+    return "${major}.${minor}.${patch}-${gitBranch()}-${gitSha()}"
 }
 
 ext {
@@ -83,14 +89,4 @@ def gitSha() {
     }
 
     return cmd.text.trim()
-}
-
-def gitTags() {
-    def cmd = 'git tag --points-at HEAD'.execute([], project.rootDir)
-    cmd.waitFor()
-    if (cmd.exitValue() != 0) {
-        throw new RuntimeException(cmd.errorStream.text)
-    }
-
-    return cmd.text.trim().split('\n')
 }
