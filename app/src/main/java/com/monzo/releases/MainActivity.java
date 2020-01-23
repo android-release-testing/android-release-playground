@@ -19,5 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView versionCode = findViewById(R.id.versionCode);
         versionCode.setText(String.valueOf(BuildConfig.VERSION_CODE));
+
+        This is not valid code
     }
 }
