@@ -29,11 +29,6 @@ def generateVersionCode() {
 }
 
 def generateVersionName() {
-    def splitVersion = rootProject.file('versioning/version').text.trim().split("\\.")
-    def major = splitVersion[0].toInteger()
-    def minor = splitVersion[1].toInteger()
-    def patch = splitVersion[2].toInteger()
-
     // Only look at the rc/nightly files if we're explicitly building a release.
     //
     // This ensures that we don't end up with a bunch of Firebase App Distribution builds with the
@@ -45,6 +40,10 @@ def generateVersionName() {
     // publishing a staging build with the same version name as the most recent release train build
     // on the release branch.
     if (project.hasProperty('releaseVersionNames') ? releaseVersionNames.toBoolean() : false) {
+        def splitVersion = rootProject.file('versioning/version').text.trim().split("\\.")
+        def major = splitVersion[0].toInteger()
+        def minor = splitVersion[1].toInteger()
+        def patch = splitVersion[2].toInteger()
         def rc = rootProject.file('versioning/rc').text.trim().toInteger()
 
         if (rc > 0 && rc < 10) {
@@ -63,7 +62,7 @@ def generateVersionName() {
     }
 
     // Any other build.
-    return "${major}.${minor}.${patch}-${gitBranch()}-${gitSha()}"
+    return "${gitBranch()}-${gitSha()}"
 }
 
 ext {
