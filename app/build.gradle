@@ -30,17 +30,17 @@ android {
         }
 
         release {
-            storeFile file("$rootDir/release.jks")
-            storePassword 'uvwxyz'
-            keyAlias 'monzo_release'
-            keyPassword 'uvwxyz'
-        }
+            // Our release process builds unsigned release APKs (using the 'unsigned' Gradle property) and
+            // performs signing on the backend.
+            // These properties exist so that we can build a signed release APK locally in an emergency.
+            def keystore = findProperty('keystore') ?: 'default'
+            def alias = findProperty('alias') ?: 'default'
+            def password = findProperty('password') ?: 'default'
 
-        upload {
-            storeFile file("$rootDir/upload.jks")
-            storePassword '123456'
-            keyAlias 'monzo_upload'
-            keyPassword '123456'
+            storeFile rootProject.file(keystore)
+            storePassword password
+            keyAlias alias
+            keyPassword password
         }
     }
 
@@ -54,14 +54,7 @@ android {
         }
 
         release {
-            def signing = findProperty('signing') ?: 'release'
-            if (signing == 'unsigned') {
-                signingConfig = null
-            } else if (signing == 'upload') {
-                signingConfig = signingConfigs.upload
-            } else {
-                signingConfig = signingConfigs.release
-            }
+            signingConfig = hasProperty('unsigned') ? null : signingConfigs.release
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')

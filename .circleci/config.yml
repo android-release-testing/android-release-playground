@@ -15,7 +15,7 @@ jobs:
       - run:
           name: Build unsigned release APK
           command: |
-            ./gradlew app:assembleRelease -Psigning=unsigned -PreleaseVersionNames=true
+            ./gradlew app:assembleRelease -Punsigned -PreleaseVersionNames=true
       - store_artifacts:
           path: /release-playground/app/build/outputs/
           destination: outputs/
