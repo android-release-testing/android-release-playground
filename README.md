@@ -2,6 +2,8 @@
 
 A mostly empty app used to test the android release process.
 
+TESTING A SEPARATE BRANCH
+
 To build an unsigned release APK, run:
 
 ```shell
