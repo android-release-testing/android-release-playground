@@ -1,6 +1,6 @@
 # android-release-playground
 
-A mostly empty app used to test the android release process.
+A mostly empty app used to test the release process.
 
 To build an unsigned release APK, run:
 
