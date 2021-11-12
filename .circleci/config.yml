@@ -3,7 +3,7 @@ version: 2
 jobs:
   build_unsigned_release:
     docker:
-      - image: monzoandroid/ci:0.19
+      - image: monzoandroid/ci@sha256:f60519426ff50c95dfce8205726f98f8dfdccac4dfad4aa4c0b3477d38092371
     resource_class: small
     working_directory: /release-playground
     steps:
