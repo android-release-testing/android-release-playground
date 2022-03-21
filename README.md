@@ -24,5 +24,3 @@ keytool -genkeypair \
 ```
 
 Added changes caused by a hotfix
-
-More changes
