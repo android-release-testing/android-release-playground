@@ -22,3 +22,7 @@ keytool -genkeypair \
 	-keypass abcdef \
 	-validity 36500
 ```
+
+Added changes caused by a hotfix
+
+More changes
