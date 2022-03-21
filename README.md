@@ -22,3 +22,5 @@ keytool -genkeypair \
 	-keypass abcdef \
 	-validity 36500
 ```
+
+Add a few extra lines to the README file, to test whether commit messages are well reflected
