@@ -22,7 +22,3 @@ keytool -genkeypair \
 	-keypass abcdef \
 	-validity 36500
 ```
-
-1
-
-2
