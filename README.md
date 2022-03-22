@@ -23,6 +23,4 @@ keytool -genkeypair \
 	-validity 36500
 ```
 
-Some other change
-
-asasasa
+1
