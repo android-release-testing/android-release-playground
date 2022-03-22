@@ -24,5 +24,3 @@ keytool -genkeypair \
 ```
 
 Here's a change
-
-Here's another change
