@@ -24,4 +24,3 @@ keytool -genkeypair \
 ```
 
 Added a line
-Added another line
