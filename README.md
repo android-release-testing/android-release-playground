@@ -22,5 +22,3 @@ keytool -genkeypair \
 	-keypass abcdef \
 	-validity 36500
 ```
-
-Added a line
