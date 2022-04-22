@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   build_unsigned_release:
@@ -32,8 +32,6 @@ jobs:
           command: sleep 60
 
 workflows:
-  version: 2
-
   commit:
     jobs:
       - build_unsigned_release
