@@ -25,7 +25,7 @@ jobs:
             mkdir deep-links
             echo "Fake deep link list" > deep-links/supported_deep_links.txt
       - store_artifacts:
-          path: /opt/workspace/deep-links/
+          path: /release-playground/deep-links/
           destination: results/
 
   build_and_staging_ui_tests:
