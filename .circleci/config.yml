@@ -16,12 +16,11 @@ jobs:
       - run:
           name: Build minified/obfuscated debug APK
           command: |
-            ./gradlew app:assembleDebug -PpostprocessingEnabled=true -PreleaseVersionNames=${RELEASE_VERSION_NAMES}
+            ./gradlew app:assembleDebug -PpostprocessingEnabled=true -PreleaseVersionNames=<< parameters.version_names >>
       - run:
           name: Build unsigned release APK
           command: |
-            ./gradlew app:assembleRelease -Punsigned -PreleaseVersionNames=${RELEASE_VERSION_NAMES}
-      - store_artifacts:
+            ./gradlew app:assembleRelease -Punsigned -PreleaseVersionNames=<< parameters.version_names >>
           path: /release-playground/app/build/outputs/
           destination: outputs/
       - run:
