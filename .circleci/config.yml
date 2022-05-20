@@ -2,6 +2,11 @@ version: 2.1
 
 jobs:
   build_unsigned_release:
+    parameters:
+      version_names:
+        type: enum
+        enum: ["git", "release", "local"]
+        default: "git"
     docker:
       - image: monzoandroid/ci@sha256:f60519426ff50c95dfce8205726f98f8dfdccac4dfad4aa4c0b3477d38092371
     resource_class: small
@@ -39,7 +44,33 @@ jobs:
           name: Pretend to run staging UI tests
           command: sleep 60
 
+parameters:
+  build_unsigned_release:
+    type: boolean
+    default: false
+  version_names:
+    type: enum
+    enum: ["git", "release", "local"]
+    default: "git"
+
+  build_and_staging_ui_tests:
+    type: boolean
+    default: false
+
 workflows:
   commit:
+    when:
+      equal: [ webhook, << pipeline.trigger_source >> ]
     jobs:
       - build_unsigned_release
+
+  build_unsigned_release:
+    when: << pipeline.parameters.build_unsigned_release >>
+    jobs:
+      - build_unsigned_release:
+          version_names: << pipeline.parameters.version_names >>
+
+  build_and_staging_ui_tests:
+    when: << pipeline.parameters.build_and_staging_ui_tests >>
+    jobs:
+      - build_and_staging_ui_tests
