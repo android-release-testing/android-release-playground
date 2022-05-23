@@ -57,20 +57,29 @@ parameters:
     type: boolean
     default: false
 
+# See: https://discuss.circleci.com/t/v2-api-pass-git-sha-to-trigger-new-pipeline/39811/2
+job_defaults: &job_defaults
+  filters:
+    tags:
+      only: /.*/
+
 workflows:
   commit:
     when:
       equal: [ webhook, << pipeline.trigger_source >> ]
     jobs:
-      - build_unsigned_release
+      - build_unsigned_release:
+          <<: *job_defaults
 
   build_unsigned_release:
     when: << pipeline.parameters.build_unsigned_release >>
     jobs:
       - build_unsigned_release:
+          <<: *job_defaults
           version_names: << pipeline.parameters.version_names >>
 
   build_and_staging_ui_tests:
     when: << pipeline.parameters.build_and_staging_ui_tests >>
     jobs:
-      - build_and_staging_ui_tests
+      - build_and_staging_ui_tests:
+          <<: *job_defaults
