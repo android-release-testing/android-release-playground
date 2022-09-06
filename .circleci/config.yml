@@ -63,7 +63,6 @@ jobs:
             mv baseline-prof.txt app/src/main
       - store_artifacts:
           path: /release-playground/app/src/main/baseline-prof.txt
-          destination: outputs/
       - save_cache:
           <<: *baseline_profile_cache_key
           paths:
