@@ -58,7 +58,7 @@ jobs:
       - run:
           name: Download a baseline prof
           command: |
-            curl -L "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/ui/ui/src/androidMain/baseline-prof.txt?format=TEXT" -o .
+            curl -L "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/ui/ui/src/androidMain/baseline-prof.txt?format=TEXT" -o baseline-prof.txt
             mkdir -p app/src/main
             mv baseline-prof.txt app/src/main
       - store_artifacts:
