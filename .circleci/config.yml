@@ -1,5 +1,8 @@
 version: 2.1
 
+baseline_profile_cache_key: &baseline_profile_cache_key
+  key: baseline_profile-{{ .Revision }}
+
 jobs:
   build_unsigned_release:
     parameters:
@@ -13,6 +16,8 @@ jobs:
     working_directory: /release-playground
     steps:
       - checkout
+      - restore_cache:
+          <<: *baseline_profile_cache_key
       - run:
           name: Build minified/obfuscated debug APK
           command: |
@@ -44,6 +49,26 @@ jobs:
           name: Pretend to run staging UI tests
           command: sleep 60
 
+  generate_baseline_profile:
+    docker:
+      - image: monzoandroid/ci:0.19
+    resource_class: small
+    working_directory: /release-playground
+    steps:
+      - run:
+          name: Download a baseline prof
+          command: |
+            curl -L "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/ui/ui/src/androidMain/baseline-prof.txt?format=TEXT" -o .
+            mkdir -p app/src/main
+            mv baseline-prof.txt app/src/main
+      - store_artifacts:
+          path: /release-playground/app/src/main/baseline-prof.txt
+          destination: outputs/
+      - save_cache:
+          <<: *baseline_profile_cache_key
+          paths:
+            - /release-playground/app/src/main/baseline-prof.txt
+
 parameters:
   build_unsigned_release:
     type: boolean
@@ -74,9 +99,13 @@ workflows:
   build_unsigned_release:
     when: << pipeline.parameters.build_unsigned_release >>
     jobs:
+      - generate_baseline_profile:
+          <<: *job_defaults
       - build_unsigned_release:
           <<: *job_defaults
           version_names: << pipeline.parameters.version_names >>
+          requires:
+            - generate_baseline_profile
 
   build_and_staging_ui_tests:
     when: << pipeline.parameters.build_and_staging_ui_tests >>
