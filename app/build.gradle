@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 33
 
         applicationId "com.monzo.releases"
 
