@@ -13,7 +13,9 @@
         android:theme="@style/Theme.ReleasePlayground"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.monzo.releases.MainActivity">
+        <activity
+            android:name="com.monzo.releases.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
