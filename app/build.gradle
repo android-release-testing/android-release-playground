@@ -3,11 +3,12 @@ apply from: "$rootDir/gradle/versioning.gradle"
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    namespace = "com.monzo.releases"
+    compileSdk 33
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdk 23
+        targetSdk 33
 
         applicationId "com.monzo.releases"
 
@@ -49,7 +50,7 @@ android {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
 
-            minifyEnabled project.hasProperty('postprocessingEnabled') ? postprocessingEnabled.toBoolean() : false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
 
@@ -59,6 +60,10 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
