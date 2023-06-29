@@ -56,11 +56,10 @@ jobs:
     working_directory: /release-playground
     steps:
       - run:
-          name: Download a baseline prof
+          name: Create a fake baseline profile
           command: |
-            curl -L "https://android.googlesource.com/platform/frameworks/support/+/androidx-main/compose/ui/ui/src/androidMain/baseline-prof.txt?format=TEXT" -o baseline-prof.txt
             mkdir -p app/src/main
-            mv baseline-prof.txt app/src/main
+            echo 'HSPLandroidx/compose/ui/input/InputMode;->**(**)**' > app/src/main/baseline-prof.txt
       - store_artifacts:
           path: /release-playground/app/src/main/baseline-prof.txt
           destination: outputs/
