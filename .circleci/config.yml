@@ -11,7 +11,7 @@ jobs:
         enum: [ "git", "release", "local" ]
         default: "git"
     docker:
-      - image: monzoandroid/ci@sha256:f60519426ff50c95dfce8205726f98f8dfdccac4dfad4aa4c0b3477d38092371
+      - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
     working_directory: /release-playground
     steps:
