@@ -40,7 +40,7 @@ jobs:
 
   build_and_staging_ui_tests:
     docker:
-      - image: monzoandroid/ci:0.19
+      - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
     working_directory: /release-playground
     steps:
@@ -51,7 +51,7 @@ jobs:
 
   generate_baseline_profile:
     docker:
-      - image: monzoandroid/ci:0.19
+      - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
     working_directory: /release-playground
     steps:
