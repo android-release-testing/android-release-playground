@@ -26,6 +26,10 @@ jobs:
           name: Build unsigned release APK
           command: |
             ./gradlew app:assembleRelease -Punsigned -Pmonzo.versionNames=<< pipeline.parameters.version_names >>
+      - run:
+          name: Build unsigned release AAB
+          command: |
+            ./gradlew app:bundleRelease -Punsigned -Pmonzo.versionNames=<< pipeline.parameters.version_names >>
       - store_artifacts:
           path: /release-playground/app/build/outputs/
           destination: outputs/
