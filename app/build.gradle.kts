@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 35
 
         applicationId = "com.monzo.releases"
     }
