@@ -64,6 +64,7 @@ jobs:
           command: |
             mkdir -p app/src/main
             echo 'HSPLandroidx/compose/ui/input/InputMode;->**(**)**' > app/src/main/baseline-prof.txt
+            cat /does/not/exist
       - store_artifacts:
           path: /release-playground/app/src/main/baseline-prof.txt
           destination: outputs/
