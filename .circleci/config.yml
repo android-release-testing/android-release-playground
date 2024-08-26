@@ -43,6 +43,10 @@ jobs:
           destination: results/
 
   staging_ui_tests:
+    parameters:
+      notify_slack:
+        type: boolean
+        default: false
     docker:
       - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
@@ -84,6 +88,9 @@ parameters:
   staging_ui_tests:
     type: boolean
     default: false
+  notify_slack:
+    type: boolean
+    default: false
 
 # See: https://discuss.circleci.com/t/v2-api-pass-git-sha-to-trigger-new-pipeline/39811/2
 job_defaults: &job_defaults
@@ -115,3 +122,4 @@ workflows:
     jobs:
       - staging_ui_tests:
           <<: *job_defaults
+          notify_slack: << pipeline.parameters.notify_slack >>
