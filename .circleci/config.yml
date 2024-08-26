@@ -42,7 +42,7 @@ jobs:
           path: /release-playground/deep-links/
           destination: results/
 
-  build_and_staging_ui_tests:
+  staging_ui_tests:
     docker:
       - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
@@ -81,7 +81,7 @@ parameters:
     enum: [ "git", "release", "local" ]
     default: "git"
 
-  build_and_staging_ui_tests:
+  staging_ui_tests:
     type: boolean
     default: false
 
@@ -110,8 +110,8 @@ workflows:
           requires:
             - generate_baseline_profile
 
-  build_and_staging_ui_tests:
-    when: << pipeline.parameters.build_and_staging_ui_tests >>
+  staging_ui_tests:
+    when: << pipeline.parameters.staging_ui_tests >>
     jobs:
-      - build_and_staging_ui_tests:
+      - staging_ui_tests:
           <<: *job_defaults
