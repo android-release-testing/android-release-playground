@@ -47,12 +47,21 @@ jobs:
       notify_slack:
         type: boolean
         default: false
+      test_trigger:
+        type: string
+        default: ""
+      notify_slack_user_id:
+        type: string
+        default: ""
     docker:
       - image: monzoandroid/ci@sha256:b68288e2bd40b470316428e17a811e2a2c75f5db5abee12b31e04986c4d79f92
     resource_class: small
     working_directory: /release-playground
     steps:
       - checkout
+      - run:
+          name: Print parameters
+          command: echo notify_slack=<< parameters.notify_slack >> test_trigger=<< parameters.test_trigger >> notify_slack_user_id=<< parameters.notify_slack_user_id >>
       - run:
           name: Pretend to run staging UI tests
           command: sleep 60
@@ -91,6 +100,12 @@ parameters:
   notify_slack:
     type: boolean
     default: false
+  test_trigger:
+    type: string
+    default: ""
+  notify_slack_user_id:
+    type: string
+    default: ""
 
 # See: https://discuss.circleci.com/t/v2-api-pass-git-sha-to-trigger-new-pipeline/39811/2
 job_defaults: &job_defaults
@@ -123,3 +138,5 @@ workflows:
       - staging_ui_tests:
           <<: *job_defaults
           notify_slack: << pipeline.parameters.notify_slack >>
+          test_trigger: << pipeline.parameters.test_trigger >>
+          notify_slack_user_id: << pipeline.parameters.notify_slack_user_id >>
