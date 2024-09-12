@@ -50,7 +50,7 @@ jobs:
       test_trigger:
         type: string
         default: ""
-      notify_slack_user_id:
+      notify_slack_user:
         type: string
         default: ""
     docker:
@@ -61,7 +61,7 @@ jobs:
       - checkout
       - run:
           name: Print parameters
-          command: echo notify_slack=<< parameters.notify_slack >> test_trigger=<< parameters.test_trigger >> notify_slack_user_id=<< parameters.notify_slack_user_id >>
+          command: echo notify_slack=<< parameters.notify_slack >> test_trigger=<< parameters.test_trigger >> notify_slack_user=<< parameters.notify_slack_user >>
       - run:
           name: Pretend to run staging UI tests
           command: sleep 60
@@ -103,7 +103,7 @@ parameters:
   test_trigger:
     type: string
     default: ""
-  notify_slack_user_id:
+  notify_slack_user:
     type: string
     default: ""
 
@@ -139,4 +139,4 @@ workflows:
           <<: *job_defaults
           notify_slack: << pipeline.parameters.notify_slack >>
           test_trigger: << pipeline.parameters.test_trigger >>
-          notify_slack_user_id: << pipeline.parameters.notify_slack_user_id >>
+          notify_slack_user: << pipeline.parameters.notify_slack_user >>
