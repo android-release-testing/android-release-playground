@@ -134,4 +134,4 @@ workflows:
     when: << pipeline.parameters.generate_baseline_profile >>
     jobs:
       - generate_baseline_profile:
-          <<: *api_triggered_api_triggered_job_defaults
+          <<: *api_triggered_job_defaults
