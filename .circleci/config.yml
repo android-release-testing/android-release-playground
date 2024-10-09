@@ -1,8 +1,5 @@
 version: 2.1
 
-baseline_profile_cache_key: &baseline_profile_cache_key
-  key: baseline_profile-{{ .Revision }}
-
 jobs:
   build_unsigned_release:
     parameters:
@@ -16,8 +13,6 @@ jobs:
     working_directory: /release-playground
     steps:
       - checkout
-      - restore_cache:
-          <<: *baseline_profile_cache_key
       - run:
           name: Build minified/obfuscated debug APK
           command: |
@@ -75,15 +70,11 @@ jobs:
       - run:
           name: Create a fake baseline profile
           command: |
-            mkdir -p app/src/main
-            echo 'HSPLandroidx/compose/ui/input/InputMode;->**(**)**' > app/src/main/baseline-prof.txt
+            mkdir -p app/src/release/generated/baselineProfiles
+            echo 'HSPLandroidx/compose/ui/input/InputMode;->**(**)**' > app/src/release/generated/baselineProfiles/baseline-prof.txt
       - store_artifacts:
-          path: /release-playground/app/src/main/baseline-prof.txt
+          path: /release-playground/app/src/release/generated/baselineProfiles/baseline-prof.txt
           destination: outputs/
-      - save_cache:
-          <<: *baseline_profile_cache_key
-          paths:
-            - /release-playground/app/src/main/baseline-prof.txt
 
 parameters:
   build_unsigned_release:
@@ -93,7 +84,6 @@ parameters:
     type: enum
     enum: [ "git", "release", "local" ]
     default: "git"
-
   staging_ui_tests:
     type: boolean
     default: false
@@ -106,9 +96,12 @@ parameters:
   notify_slack_user:
     type: string
     default: ""
+  generate_baseline_profile:
+    type: boolean
+    default: false
 
 # See: https://discuss.circleci.com/t/v2-api-pass-git-sha-to-trigger-new-pipeline/39811/2
-job_defaults: &job_defaults
+api_triggered_job_defaults: &api_triggered_job_defaults
   filters:
     tags:
       only: /.*/
@@ -119,24 +112,26 @@ workflows:
       equal: [ webhook, << pipeline.trigger_source >> ]
     jobs:
       - build_unsigned_release:
-          <<: *job_defaults
+          <<: *api_triggered_job_defaults
 
   build_unsigned_release:
     when: << pipeline.parameters.build_unsigned_release >>
     jobs:
-      - generate_baseline_profile:
-          <<: *job_defaults
       - build_unsigned_release:
-          <<: *job_defaults
+          <<: *api_triggered_job_defaults
           version_names: << pipeline.parameters.version_names >>
-          requires:
-            - generate_baseline_profile
 
   staging_ui_tests:
     when: << pipeline.parameters.staging_ui_tests >>
     jobs:
       - staging_ui_tests:
-          <<: *job_defaults
+          <<: *api_triggered_job_defaults
           notify_slack: << pipeline.parameters.notify_slack >>
           test_trigger: << pipeline.parameters.test_trigger >>
           notify_slack_user: << pipeline.parameters.notify_slack_user >>
+
+  generate_baseline_profile:
+    when: << pipeline.parameters.generate_baseline_profile >>
+    jobs:
+      - generate_baseline_profile:
+          <<: *api_triggered_api_triggered_job_defaults
