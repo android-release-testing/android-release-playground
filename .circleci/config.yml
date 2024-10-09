@@ -73,8 +73,8 @@ jobs:
             mkdir -p app/src/release/generated/baselineProfiles
             echo 'HSPLandroidx/compose/ui/input/InputMode;->**(**)**' > app/src/release/generated/baselineProfiles/baseline-prof.txt
       - store_artifacts:
-          path: /release-playground/app/src/release/generated/baselineProfiles/baseline-prof.txt
-          destination: outputs/
+          path: app/src/release/generated/baselineProfiles/baseline-prof.txt
+          destination: baseline-prof.txt
 
 parameters:
   build_unsigned_release:
